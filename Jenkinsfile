@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo "Code is already checked out from SCM"
-            }
-        }
-
         stage('Build') {
             steps {
                 bat 'python --version'
@@ -18,6 +12,15 @@ pipeline {
             steps {
                 bat 'python app.py'
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ BUILD SUCCESS: Pipeline completed successfully!"
+        }
+        failure {
+            echo "❌ BUILD FAILED: Something went wrong!"
         }
     }
 }
