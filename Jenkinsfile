@@ -1,26 +1,42 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('* * * * *')
+    }
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                bat 'python --version'
+                git branch: 'main', url: 'https://github.com/Harish95-byte/jenkins_git.git'
             }
         }
 
-        stage('Test') {
+        stage('Compile') {
             steps {
-                bat 'python app.py'
+                bat 'javac Hello.java'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                bat 'java Hello'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'Hello.class', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo "✅ BUILD SUCCESS: Pipeline completed successfully!"
+            echo "✅ CI PIPELINE SUCCESS!"
         }
         failure {
-            echo "❌ BUILD FAILED: Something went wrong!"
+            echo "❌ CI PIPELINE FAILED!"
         }
     }
 }
